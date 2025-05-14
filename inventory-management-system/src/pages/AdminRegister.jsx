@@ -49,7 +49,7 @@ const AdminRegister = () => {
     try {
       // Direct API call to bypass the regular register function
       const res = await axios.post(
-        "http://localhost:5000/api/users/admin-register",
+        "https://api-jbc1.onrender.com/api/users/admin-register",
         {
           name,
           email,

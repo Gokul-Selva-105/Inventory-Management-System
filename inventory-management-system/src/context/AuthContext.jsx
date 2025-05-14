@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const AuthContext = createContext();
 
@@ -8,78 +8,90 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  
+
   // Check if user is already logged in (on app load)
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (token) {
           // Set auth token header
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
           // Get user data
-          const res = await axios.get('http://localhost:5000/api/users/profile');
+          const res = await axios.get(
+            "https://api-jbc1.onrender.com/api/users/profile"
+          );
           setUser(res.data);
         }
       } catch (error) {
         // If token is invalid, remove it
-        localStorage.removeItem('token');
-        delete axios.defaults.headers.common['Authorization'];
+        localStorage.removeItem("token");
+        delete axios.defaults.headers.common["Authorization"];
       } finally {
         setLoading(false);
       }
     };
-    
+
     checkLoggedIn();
   }, []);
-  
+
   // Register user
   const register = async (userData) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/users/register', userData);
-      
+      const res = await axios.post(
+        "https://api-jbc1.onrender.com/api/users/register",
+        userData
+      );
+
       // Save token and set auth header
-      localStorage.setItem('token', res.data.token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
-      
+      localStorage.setItem("token", res.data.token);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${res.data.token}`;
+
       setUser(res.data);
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Registration failed'
+      return {
+        success: false,
+        message: error.response?.data?.message || "Registration failed",
       };
     }
   };
-  
+
   // Login user
   const login = async (email, password) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', { email, password });
-      
+      const res = await axios.post(
+        "https://api-jbc1.onrender.com/api/users/login",
+        { email, password }
+      );
+
       // Save token and set auth header
-      localStorage.setItem('token', res.data.token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
-      
+      localStorage.setItem("token", res.data.token);
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${res.data.token}`;
+
       setUser(res.data);
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Invalid credentials'
+      return {
+        success: false,
+        message: error.response?.data?.message || "Invalid credentials",
       };
     }
   };
-  
+
   // Logout user
   const logout = () => {
-    localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
+    localStorage.removeItem("token");
+    delete axios.defaults.headers.common["Authorization"];
     setUser(null);
-    navigate('/login');
+    navigate("/login");
   };
-  
+
   return (
     <AuthContext.Provider
       value={{
@@ -89,7 +101,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         isAuthenticated: !!user,
-        isAdmin: user?.isAdmin || false
+        isAdmin: user?.isAdmin || false,
       }}
     >
       {children}
