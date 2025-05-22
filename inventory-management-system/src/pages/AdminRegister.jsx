@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { AuthContext } from "../context/AuthContext";
 import { showToast } from "../components/common/ToastContainer";
+import {motion} from "framer-motion";
 import axios from "axios";
 
 const AdminRegister = () => {
